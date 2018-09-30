@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <title>chapter-1</title>
+    
+    <link rel="stylesheet" type="text/css" href="./chapter.css" > </link>
+  </head>
+  
+  
+  <body>
+    <h1>WebGL介绍</h1>
+    <h2>官方文档</h2>
+    
+      <p class="para">&nbsp;&nbsp;OpenGL is the industry's most widely used, supported and best documented 2D/3D graphics API making it inexpensive & easy to obtain information on implementing OpenGL in hardware and software. </p>
+      
+      <p class="para">&nbsp;&nbsp;OpenGL® ES is a royalty-free, cross-platform API for rendering advanced 2D and 3D graphics on embedded and mobile systems - including consoles, phones, appliances and vehicles. It consists of a well-defined subset of desktop OpenGL suitable for low-power devices, and provides a flexible and powerful interface between software and graphics acceleration hardware.</p>
+      
+      <p class="para">&nbsp;&nbsp;WebGL is a cross-platform, royalty-free web standard for a low-level 3D graphics API based on OpenGL ES, exposed to ECMAScript via the HTML5 Canvas element. Developers familiar with OpenGL ES 2.0 will recognize WebGL as a Shader-based API using GLSL, with constructs that are semantically similar to those of the underlying OpenGL ES API. It stays very close to the OpenGL ES specification, with some concessions made for what developers expect out of memory-managed languages such as JavaScript. WebGL 1.0 exposes the OpenGL ES 2.0 feature set; WebGL 2.0 exposes the OpenGL ES 3.0 API.</p>
+    
+    
+    <h2>用人话讲</h2>
+      <p class="para">
+      &nbsp;&nbsp;&nbsp;&nbsp;OpenGL是一个基于图形设备的跨平台图形编程接口，能够利用图形设备（GPU）的图形计算能力，用来处理三维模型然后生成二维的图像.
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;OpenGL ES 是针对嵌入式和移动平台等性能较弱的开发的一套OpenGL的子集
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;WebGL 将 OpenGL ES以JavaScript层的接口暴露出来
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;WebGL需要浏览器的支持，相对于native开发来讲更加方便，不需要准备开发环境（不需要下载依赖的库），不需要繁琐的OpenGL的初始化过程，比如初始化context，导出当前版本的API（这个是一个Win32平台下C++的OpenGL的简单代码https://github.com/LeafFourth/gl_begin）。
+      </p>
+      
+    <h2>层次结构</h2>
+      <p class="para">
+      &nbsp;&nbsp;&nbsp;&nbsp;计算机领域（包括软件和硬件）有一个随处可见的概念——抽象（接口），比如深入人心的"硬件设备——设备驱动——操作系统——应用软件"的计算机系统结构。
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;OpenGL的应用层次如下
+      <br>
+      <img src="software_hierarcgy.png" width="30%" height="30%"></img>
+      </p>
+      
+  </body>
+</html>

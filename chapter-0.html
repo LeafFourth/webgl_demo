@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <title>chapter-0</title>
+    
+    <link rel="stylesheet" type="text/css" href="./chapter.css" > </link>
+  </head>
+  
+  
+  <body>
+    <h1>引入</h1>
+    <h2>它并不罕见</h2>
+      <p>
+      &nbsp;&nbsp;&nbsp;&nbsp;每个人都或多或少都接触过3D游戏或者3D动画，这里的3D和3D电影中3D的含义不同，不是指画面具有立体感，而是指看到的场景是通过3D模型组合成而成的。这些作品展现给我们的都是一帧帧的图像，所以通过手工绘制每一帧图像理论上也能达到3D动画（动漫）的效果。
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;3D场景转换为2D图像的过程就可以交给像WebGL这些图形API来做。这些图形API同时能够完成场景中模型的位置或者行动的变换以及视角的切换。
+      </p>
+      
+    <h2>存在即合理</h2>
+      <p>
+      &nbsp;&nbsp;&nbsp;&nbsp;模型的变换以及3D转换为2D需要一系列计算过程，完全可以通过CPU来完成，但WebGL这些图形API能够利用显卡（GPU）等图形设备更高效这些计算过程。
+      </p>
+      
+      <p class="comment">&nbsp;&nbsp;甚至图形API中在有些功能缺乏GPU的支持，这时需要则需要通过CPU模拟这些计算过程。
+      </p>
+      
+      <p>
+      &nbsp;&nbsp;&nbsp;&nbsp;3D的计算过程通常可以分解为许多彼此独立的计算过程，所以更适合做并行计算。常规的通用处理器（CPU）更接近图灵计算机的工作形态，处理器核心少，更适合用来处理串行计算过程。而显卡（GPU）是针对图形处理的设计的，具有成百上千个流处理器单元，能够同时处理多个计算任务（虽然单个处理器可能比不上CPU，但以量取胜），天生具有优秀的并行计算能力。
+      </p>
+      
+      <p class="comment">&nbsp;&nbsp;GPU除了OpenGL被应用于图形计算外，如被用于CUDA、OpenCL等技术，同CPU一起组成异构系统进行并行计算
+      </p>
+    
+  </body>
+</html>

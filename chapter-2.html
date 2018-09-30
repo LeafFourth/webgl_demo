@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <title>chapter-2</title>
+    
+    <link rel="stylesheet" type="text/css" href="./chapter.css" > </link>
+  </head>
+  
+  
+  <body>
+    <h1>渲染流程</h1>
+    <p>
+    &nbsp;&nbsp;WebGL的渲染流程通过GPU内部的渲染管线来完成，早期的渲染管线是不可编程的，叫做固定渲染管线，现代的GPU所包含的渲染管线为可编程渲染管线。本节所述皆基于可渲染管线
+    <br>
+    
+    <span class="comment">
+    &nbsp;两种渲染管线的区别简单可以理解为前者工作的细节流程已经固定，只需要调整一些参数，后者更具灵活性，可以通过编程（GLSL，graphic language shader language）来控制一些渲染阶段的细节</span>
+    <br>
+    <br>
+    &nbsp;&nbsp;渲染管线的作用是将3D模型转换为2维图像的过程，大致需要经过以下阶段
+    </p>
+    
+    <h2>顶点着色（vertex shader）</h2>
+    <p>
+    &nbsp;&nbsp;顶点着色阶段计算最终的顶点坐标。注意只有坐标在x、y、z坐标都在（-1,1）区间内的点最终才有可能显示出来。这个阶段接收应用程序传来的数据，并可以通过glsl进行控制，这个过程中可以：
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;对外部传来的顶点位置形状进行改变，可以完成旋转或者缩放操作等模型的操作，即视图变换;
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;把顶点放到整个场景的坐标内（从视图坐标变换到整个场景内的坐标），既世界变换;
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;进行投影变换,如通过透视得到近大远小的效果，透视投影的结果是讲椎体内部的顶点映射到最终可显示的区间内，椎体外的部分在后面的阶段将被抛弃掉。
+    <br>
+    <img src="./projective.jpg">透视投影</img>
+    </p>
+
+    <h2>图元装配</h2>
+    <p>把顶点组成图元，webgl内的图元有三角型、线、点</p>
+    
+    <h2>裁剪</h2>
+    <p>把坐标在x、y、z坐标都在（-1,1）区间外的图元抛弃掉</p>
+    
+    <h2>光栅化</h2>
+    <p>
+    
+    &nbsp;&nbsp;三维转换为二维的过程通过此过程完成。简单的可以想象为把三维图形沿着平行于z轴的方向压扁，然后得到二维的图形，然后映射到屏幕大小，生成一个个的像素点。
+    <br>
+    
+    &nbsp;&nbsp;每个像素点没有对应于特定的顶点，所以连同顶点传递过来的数据需要通过特殊的计算（比如求差值）为每个像素点生成一份，这个可以思考一个三个顶点颜色不同的三角形，最终生成的三角形内部的颜色是渐变的。
+    <br>
+    <img src="./rasterization.png">光栅化</img>
+ 
+    </p>
+  
+  
+    <h2>片元着色（vertex shader）</h2>
+    <p>
+      最终生成
+    </p>
+    
+    
+    <h2>逐片元挑选</h2>
+    
+    
+    
+    
+    
+    
+  </body>
+</html>
