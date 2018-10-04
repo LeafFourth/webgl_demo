@@ -1,0 +1,87 @@
+<html>
+  <head>
+    <title>chapter-6</title>
+    
+    <link rel="stylesheet" type="text/css" href="./chapter.css" > </link>
+  </head>
+  
+  
+  <body>
+    <h1>附录</h1>
+    
+    <h2>chrome中WebGL实现分析</h2>
+    <p>
+       Windows 下由于许多原因，(chrome的)WebGL实现并不依赖于OpenGL ES，而是通过DX实现(模拟)了OpenGL ES的接口，进而完成WebGL的功能，即windows下chrome的WebGL采用了与OpenGL有相同功能的DirectX 实现！分析如下(本部分基于Windows上的版本为69.0.3497.100的chrome进行分析。)
+    </p>
+      
+      <p>
+      据了解chrome浏览器采用多进程的架构，且每一个tab都有一个自己的render（通过命令行参数标记）进程，另外chrome还有一个公共的"gpu-process"进程，据观察这个gpu进程就是完成WebGL的功能的关键部分，如果把此进程kill掉，就会发现WebGL部分就不能正常工作（使用WebGL的网页的WebGL渲染部分就不能正常显示）。
+      </p>
+      <br>
+      
+      <p>通过DLL依赖分析，chrome并没有任何进程依赖于OpenGL，下图列出了chrome的GPU渲染进程的部分DLL依赖(图片由红线分割的两部分组成，图中的DLL安名字进行排序)。
+  
+      <div class="img_wrapper"><img src="./chrome_webgl2_post.png" style="width: 80%;"></img> <br>chrome 3D api 依赖</div>
+      <br>
+      </p>
+      
+    <p>
+      另外通过测试简单的WebGL代码发现chrome内部的gpu进程会调用d3d11(DX的3D API)的API(此部分正如前面简述的js的实现原理)，windbg调试如下：<br>
+      <div class="img_wrapper"><img src="./chrome_webgl_post.png" style="width: 80%;"></img> <br>chrome 3D api 依赖</div>
+    </p>
+    
+    
+    <h2>model.html的示例的代码结构</h2>
+      <p class="sub_title2 key_words">
+      源文件组成：
+      </p>
+       <p>
+      <span class="text_block1">main.js 主干文件，包含所有的交互事件（如鼠标双击，滑动）；</span><br>
+      <span class="text_block1">gl_draw.js 绘制的主要文件，包换WebGL的初始化，buffer的初始化、场景的绘制过程；</span><br>
+      <span class="text_block1">matrix.js 主要部分摘自MDN的WebGL示例代码的gl-matrix.js，包换基本所有的矩阵变换函数；</span><br>
+      <span class="text_block1">data.js 包含WebGL代码使用的顶点、颜色、顶点索引等数据；</span><br>
+      <span class="text_block1">shader_source.js  包含WebGL的shader程序的代码；</span><br>
+      <span class="text_block1">ray_pick.js 求解直线与三角形的面的交点，辅助完成点选模型的操作；</span>
+    </p>
+    
+    <p class="sub_title2 key_words">
+      支持的所有交互操作见文件main.js的initEvents，包含的交互有：
+      </p>
+       <p>
+      
+      <span class="text_block1">鼠标滚轮缩放</span><br>
+      <span class="text_block1">滑动旋转</span><br>
+      <span class="text_block1">0-5数字键还原面</span><br>
+      <span class="text_block1">双击正方体的面然后跳到对应内容</span><br>
+    </p>
+    
+    
+    <p class="sub_title2 key_words">
+      场景绘制代码见gl_draw.js的drawScene
+    </p>
+    
+    <p class="sub_title2 key_words">
+      0-5数字键完成正方体复位到某一章节的代码逻辑：
+    </p>    
+    <p>
+      <span class="text_block1">记录面朝屏幕的面的面法线以及一个另外一个垂直于此面法线的向量originVec0和originVec1； </span><br>
+      <span class="text_block1">记录初始时正方体的每一个面的面法线和一个垂直的向量如第0个面为faceTrace0_0和faceTrace1_0，使得这两个向量与originVec0和originVec1重合时，面能够复位 </span><br>
+      <span class="text_block1">如果正方体进行旋转时，同时变换六个面的向量各自的向量； </span><br>
+      <span class="text_block1">  还原某个面，复原代码为revertFace，旋转正方体，使得此面面向量与originVec0重合，然后绕着面向量旋转另外一个向量与originVec1，此时还原完毕； </span><br>
+    </p>
+    
+    <p class="sub_title2 key_words">
+      点选正方体的面见js_draw.js的onGLDClick，原理为：
+    </p>    
+    <p>
+      <span class="text_block1">按照透视投影的成像原理，假设近裁面即画布的地方，那么视野中任意一点 A 所成的像将落在此点与摄像头连线与近裁面的交点 B 上，而此射线与远裁面的交点为 C ，那么假如 C 处有一点，那么成的像也将落在 B 。渲染管线中顶点最终坐标的计算过程与这里所讲的类似，A、B、C计算的最终的顶点坐标x、y相同，但是深度Z不同。B点是最近的点，最终计算的深度为-1，C最远为1， A在-1到1之间。</span><br>
+      
+      <span class="text_block1">按照上面的原理，那么鼠标在屏幕上的落点与摄像头的连线所穿过的图形是能够选中的图形，那么通过鼠标所在位置的x、y以及-1和1组成近裁面E和远裁面上的点F，通过矩阵变换的逆过程，即可求出原始的远近裁面的坐标I和J</span><br>
+      <span class="text_block1">然后求IJ连线和每个图形原始顶点坐标组成的三角形面的交点，如果存在交点，那么即为点所在的图形即为候选图形，</span><br><span class="text_block1">最终哪个候选图形离E点最近，则为选中的图形</span><br>
+      <span class="text_block1">求解直线与三角形的面的交点的代码见ray_pick.js</span><br>
+      
+      <div class="img_wrapper"><img src="./ray_pick.png"></img> <br>raypick</div>
+    </p>
+      
+  </body>
+</html>

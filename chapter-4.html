@@ -1,16 +1,107 @@
 <html>
   <head>
     <title>chapter-4</title>
+    
+    <link rel="stylesheet" type="text/css" href="./chapter.css" > </link>
   </head>
   
   
   <body>
-    <h1>chapter 4</h1>
+    <h1>Shader与GLSL</h1>
+    <p class="sub_title">——少则得，多则惑</p>
+    
+    <p>
+      &nbsp;&nbsp;&nbsp;&nbsp;前面基础讲的差不多了，这里开始涉及代码的内容。
+    </p>
+    
+    <h2>什么是Shader</h2>
+      
+      <p>
+    
+      &nbsp;&nbsp;&nbsp;&nbsp;Shader，着色器，是运行在GPU之上的程序，是现代OpenGL应用程序控制渲染管线完成渲染过程的一种方式，是可编程渲染管线的具体体现方式。
+      <br>
+      <br>
+      
+      
+      &nbsp;&nbsp;&nbsp;&nbsp;现代的OpenGL程序都需要Shader来完成，Shader程序有：  <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Vertex Shader(顶点着色器)  <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Tessellation(细分着色器)   <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Tess Control Shader         <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Tess Evaluation Shader      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Geometry Shader(几何着色器)  <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Fragment Shader(片元着色器)  <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Compute Shader          <br>
+      <br>
+      
+      &nbsp;&nbsp;&nbsp;&nbsp;Vertex Shader 和 Fragment Shader着色器是必须的两个着色器。shader通过GLSL编写，下面会给出简单的shader程序示例
+      <br>
+      <br>
     
     
+      </p>
+    <h2>Vertex Shader</h2>
+    <p>
+      &nbsp;&nbsp;&nbsp;&nbsp;顶点着色器和前面顶点着色阶段相对应，负责为每个顶点坐标计算最终的顶点坐标，最终内置变量gl_Postion作为顶点着色器的输出将顶点坐标传递到后面的阶段。
+      <br>
+      <br>
+      
+      &nbsp;&nbsp;&nbsp;&nbsp简单的vertex shader示例： <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  attribute vec3 vertex;  <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  attribute vec4 color;   <br>
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  uniform mat4 matrix;     <br>
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  varying highp vec4 tColor; <br>
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  void main() <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  {  <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;                              vec4 v = vec4(vertex, 1.0);  <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;                              gl_Position = matrix * v;  <br>
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;                              tColor = color;  <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  } <br>
+      <br>
+    
+      &nbsp;&nbsp;&nbsp;&nbsp;这段代码的意思是：<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;将外部传来的顶点坐标vertex通过matrix变换生成最终的顶点坐标，然后传给gl_Position作为输出；<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;将外部传来的顶点对应的颜色值color不加任何处理通过自定义的变量tColor传递到后面的阶段；<br>
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;其中attribute表示逐顶点传来的数据，比如模型由三个顶点组成，那么每一个顶点都会经过顶点着色阶段，然后把自己的顶点传递给vertex，对应的颜色传递给color。<br>
+      &nbsp;&nbsp;&nbsp;&nbsp; uniform 表示对于每个顶点都相同的数据，在这个程序中表示对每个顶点做同样的变换。 <br>
+      &nbsp;&nbsp;&nbsp;&nbsp; mat4 表示4*4的矩阵(每个分量都是float) <br>
+      &nbsp;&nbsp;&nbsp;&nbsp; vec4 表示大小为4的向量，此外还有v3，v2不同维度的矩阵  <br>
+      &nbsp;&nbsp;&nbsp;&nbsp; varying 表示可以在 顶点着色器 和 片元着色器 间传递的数据  <br>
+      &nbsp;&nbsp;&nbsp;&nbsp; highp 表示数据的精度
+      <br>
+      <br>
+    
+    </p>
+    
+    <h2>Fragment Shader</h2>
+    <p>
+    &nbsp;&nbsp;&nbsp;&nbsp;片元着色器和前面片元着色阶段相对应是光栅化之后的一个阶段，负责计算每个片元的最终颜色，通过内置变量gl_FragColor作为片元着色器的输出将片元信息传递到后面的阶段。
+    <br>
+    <br>
     
     
+    &nbsp;&nbsp;&nbsp;&nbsp;简单的Fragment shader示例：<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  varying highp vec4 tColor; <br>
+    <br>
     
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  void main()  <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  {  <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    
+    &nbsp;&nbsp;&nbsp;&nbsp;                            gl_FragColor = tColor;  <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  }  <br>
+    <br>
+    
+    &nbsp;&nbsp;&nbsp;&nbsp;这段代码的意思是：<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;将之前顶点着色器传来的颜色tColor直接作为片元主色阶段的输出。
+    
+    </p>
     
   </body>
 </html>

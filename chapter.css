@@ -1,0 +1,52 @@
+p {
+  text-indent: 20px;
+  position:relative; 
+  margin-left:100px; 
+  margin-right:100px;
+  margin-top:0px;
+}
+
+h1 {
+  text-align:center;
+}
+h2 {
+  position:relative;
+  left:100px;
+}
+
+.comment {
+  font-family: "楷体","楷体_GB2312"; 
+  font-size:16px;
+}
+
+.sub_title {
+  text-align: center
+}
+
+.key_words {
+  text-indent:0px;
+  font-weight:bold;
+}
+
+.sub_title2 {
+  position:relative; 
+  margin-left:100px; 
+  margin-right:100px;
+  margin-bottom:0px;
+}
+
+img {
+  border:5px solid gray;
+}
+
+div.img_wrapper {
+  text-align: center;
+}
+
+div.img_wrapper {
+  text-align: center;
+}
+
+.text_block1 {
+  margin-left:40px; 
+}

@@ -8,28 +8,38 @@
   
   <body>
     <h1>渲染流程</h1>
+    <p class="sub_title">——执古之道，以御今之有，能知古始，是谓道纪</p>
     <p>
-    &nbsp;&nbsp;WebGL的渲染流程通过GPU内部的渲染管线来完成，早期的渲染管线是不可编程的，叫做固定渲染管线，现代的GPU所包含的渲染管线为可编程渲染管线。本节所述皆基于可渲染管线
-    <br>
     
+    &nbsp;&nbsp;&nbsp;&nbsp;WebGL的渲染流程通过GPU内部的渲染管线来完成，早期的渲染管线是不可编程的，叫做固定渲染管线，现代的GPU所包含的渲染管线为可编程渲染管线。本节所述皆基于可渲染管线
+    <br>
     <span class="comment">
-    &nbsp;两种渲染管线的区别简单可以理解为前者工作的细节流程已经固定，只需要调整一些参数，后者更具灵活性，可以通过编程（GLSL，graphic language shader language）来控制一些渲染阶段的细节</span>
+    &nbsp;&nbsp;&nbsp;&nbsp两种渲染管线的区别简单可以理解为前者工作的细节流程已经固定，只需要调整一些参数，后者更具灵活性，可以通过编程（GLSL，graphic language shader language）来控制一些渲染阶段的细节，现代的GPU已经不支持固定渲染管线了:
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    Modern GPUs no longer provide specialized hardware for the purpose of doing specific calculations in the OpenGL pipeline. Everything is done with shaders. In order to preserve compatibility, the GL driver generates a shader which emulates the fixed functionality.
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;Among many others, a simple example is rendering a primitive using one function call to submit each vertex attribute separately, e.g. glVertex3f(1.f, 0.f, 0.f), inside a glBegin() and glEnd() statement. 
+    </span>
     <br>
     <br>
-    &nbsp;&nbsp;渲染管线的作用是将3D模型转换为2维图像的过程，大致需要经过以下阶段
+    &nbsp;&nbsp;渲染管线的作用是将3D模型转换为2维图像的过程，每个顶点都会经过渲染管线（这也是为什么渲染过程能够大规模并发的原因），渲染管线大致分为以下阶段
     </p>
     
     <h2>顶点着色（vertex shader）</h2>
     <p>
-    &nbsp;&nbsp;顶点着色阶段计算最终的顶点坐标。注意只有坐标在x、y、z坐标都在（-1,1）区间内的点最终才有可能显示出来。这个阶段接收应用程序传来的数据，并可以通过glsl进行控制，这个过程中可以：
+    &nbsp;&nbsp;顶点着色阶段将原始的顶点进行一系列变换然后输出最终的顶点坐标。注意只有坐标在x、y、z坐标都在（-1,1）区间内的点最终才有可能显示出来。这个阶段接收应用程序传来的数据，并通过shader控制整个过程，可以完成的工作有：
     <br>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;对外部传来的顶点位置形状进行改变，可以完成旋转或者缩放操作等模型的操作，即视图变换;
     <br>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;把顶点放到整个场景的坐标内（从视图坐标变换到整个场景内的坐标），既世界变换;
     <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;计算光照(可以简单的理解为计算顶点的颜色)；
+    <br>
+    
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;进行投影变换,如通过透视得到近大远小的效果，透视投影的结果是讲椎体内部的顶点映射到最终可显示的区间内，椎体外的部分在后面的阶段将被抛弃掉。
     <br>
-    <img src="./projective.jpg">透视投影</img>
+    <div class="img_wrapper"><img src="./projective.jpg"><br>透视投影</img></div>
     </p>
 
     <h2>图元装配</h2>
@@ -41,24 +51,29 @@
     <h2>光栅化</h2>
     <p>
     
-    &nbsp;&nbsp;三维转换为二维的过程通过此过程完成。简单的可以想象为把三维图形沿着平行于z轴的方向压扁，然后得到二维的图形，然后映射到屏幕大小，生成一个个的像素点。
+    &nbsp;&nbsp;三维转换为二维的过程通过此过程完成。简单的可以想象为把三维图形沿着平行于z轴的方向压扁，然后得到二维的图形，然后映射到屏幕大小，生成一个个的像素大小的片元。由于场景可能相当复杂，所以可能同一个屏幕像素对应的地方同时存在多个深度不同的片元。
     <br>
     
-    &nbsp;&nbsp;每个像素点没有对应于特定的顶点，所以连同顶点传递过来的数据需要通过特殊的计算（比如求差值）为每个像素点生成一份，这个可以思考一个三个顶点颜色不同的三角形，最终生成的三角形内部的颜色是渐变的。
+    &nbsp;&nbsp;并不是每个片元都有对应于的顶点，所以连同顶点传递过来的数据需要通过特殊的计算（比如求差值）为每个像素点生成一份，这个可以思考一个三个顶点颜色不同的三角形，最终生成的三角形内部的颜色是渐变的。
     <br>
-    <img src="./rasterization.png">光栅化</img>
- 
+    <div class="img_wrapper"><img src="./rasterization.png"><br>光栅化</img></div>
     </p>
   
   
     <h2>片元着色（vertex shader）</h2>
     <p>
-      最终生成
+      接收光栅化阶段生成的片元，最终确定每一个片元颜色的地方。
     </p>
     
     
     <h2>逐片元挑选</h2>
-    
+    <p>
+      &nbsp;&nbsp;&nbsp;&nbsp;此部分可以抛弃部分片元，生成屏幕上最终显示的图像。这种抛弃部分片元的操作可以通过模板测试和深度测试来完成：
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;模板测试可以用来完成遮挡效果，能完成的功能比如圈定一个局域，只允许次区域的内容显示
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;深度测试，场景可能在某个位置有多个待选的片元，这时可以进行深度测试，让深度小的片元显示，以达成近处遮挡远处的效果
+    </p>
     
     
     

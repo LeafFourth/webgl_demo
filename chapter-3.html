@@ -1,11 +1,98 @@
 <html>
   <head>
     <title>chapter-3</title>
+    
+    <link rel="stylesheet" type="text/css" href="./chapter.css" > </link>
   </head>
   
   
   <body>
-    <h1>chapter 3</h1>
+    <h1>矩阵变换</h1>
+    <p class="sub_title">——大巧若拙 </p>
+    
+    <p>
+    &nbsp;&nbsp;&nbsp;&nbsp;WebGL中的模型顶点变换是通过矩阵完成的， 本节矩阵为列主序
+    </p>
+    
+    
+    <h2>齐次坐标与齐次矩阵</h2>
+      <p>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;3维世界中，描述一个顶点的位置只需要三个值，假设是（x,y,z）,假如一个模型由N个顶点组成，
+        那么图形沿着x轴平移1的矩阵(不考虑矩阵之外的方式)是怎么样的呢?
+        <br>
+        <br>
+
+        &nbsp;&nbsp;&nbsp;&nbsp;即使有一个三维的矩阵能够让一个顶点完成上述的平移，那么这个矩阵一定和此顶点有联系(即矩阵中包含顶点的信息，如坐标)，那么其他顶点使用此矩阵并不能完成同样的平移操作。
+        <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;所以需要齐次矩阵，这样描述一个3维顶点的坐标（w不能为0）为（x,y,z,w）,其中w如果是是1的时候（x，y， z）则为顶点的实际坐标，所以顶点的实际坐标为（x/w, y/w, z/w）;
+        
+        <br>
+    
+    
+      </p>
+    <h2>平移与缩放</h2>    
+      <p>
+        3维世界中，假如一个模型由N个顶点组成，那么图形的放大到原来的n倍(不考虑放大带来的模型中心位置的移动)的矩阵为：
+        <br>
+        
+        &nbsp;&nbsp;&nbsp;&nbsp;放大到n倍的矩阵是：<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  n， 0， 0， 0，  <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  0， n， 0， 0，  <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  0， 0， n， 0，  <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  0， 0， 0， 1，  <br>
+        
+        <br>
+        
+        &nbsp;&nbsp;&nbsp;&nbsp;沿着x轴移动n：<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  1， 0， 0， 0，  <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  0， 1， 0， 0，  <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  0， 0， 1， 0，  <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  n， n， n， 1，  <br>
+        
+        <br>
+        
+      </p>
+      
+    <h2>旋转</h2>   
+      <p>
+        
+        &nbsp;&nbsp;&nbsp;&nbsp;旋转的矩阵(这里只给出二维绕原点（0， 0）旋转角度P的矩阵计算方式)：<br>
+        
+        <span class="comment">
+        &nbsp;&nbsp;&nbsp;&nbsp;假设顶点A 与x轴的角度为Q, 距离原点距离L，那么 顶点的坐标为（L * cos(Q), L * sin(Q)）;      <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;以角度P旋转后的顶点坐标为（L * cos(P + Q), L * sin(P + Q)）， 即  <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;（L * cos(P) * cos(Q) - L * sin(P) * sin(Q), L * sin(P) * cos(Q) + L * cos(P) * sin(Q)）;
+        <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;然后凑出旋转矩阵(非齐次形式)为（旋转P的矩阵和顶点无关（与Q和L无关），所以任意顶点都可以通过此矩阵完成旋转）
+        <br>
+        
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   cos(P), sin(P),  <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        -sin(P), cos(P),
+        
+        </span>
+      </p>
+      
+    <h2>复杂的变换</h2>
+      <p>
+        &nbsp;&nbsp;&nbsp;&nbsp; 所有复杂的变换基本上都能够通过平移缩放和旋转来达成，以下是用矩阵来表示顶点的变换。
+        <br>
+        <br>
+        
+        &nbsp;&nbsp;&nbsp;&nbsp; 假如存在顶点A，其齐次坐标为 v，第一个变换为T1， 第二个变换为T2，第三个变换为T3
+        <br>
+        &nbsp;&nbsp;&nbsp;&nbsp; 那么最终A的坐标为：<br>  
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;v * T1 * T2 * T3  
+        <br>
+        &nbsp;&nbsp;&nbsp;&nbsp; 又由于矩阵乘法支持结合律， 如果 T = T1 * T2 * T3 ，那么最终A的坐标为：  <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;V * T
+        <br>
+        <span class="comment">
+        &nbsp;&nbsp;&nbsp;注意，后面的GLSL中，计算顶点变换的方式需要倒着写如： T3 * T2 * T1 * v；  
+        </span>
+        
+      </p>
     
     
     

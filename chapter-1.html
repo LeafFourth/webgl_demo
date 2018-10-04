@@ -7,35 +7,74 @@
   
   
   <body>
-    <h1>WebGL介绍</h1>
-    <h2>官方文档</h2>
+    <h1>介绍</h1>
     
-      <p class="para">&nbsp;&nbsp;OpenGL is the industry's most widely used, supported and best documented 2D/3D graphics API making it inexpensive & easy to obtain information on implementing OpenGL in hardware and software. </p>
-      
-      <p class="para">&nbsp;&nbsp;OpenGL® ES is a royalty-free, cross-platform API for rendering advanced 2D and 3D graphics on embedded and mobile systems - including consoles, phones, appliances and vehicles. It consists of a well-defined subset of desktop OpenGL suitable for low-power devices, and provides a flexible and powerful interface between software and graphics acceleration hardware.</p>
-      
-      <p class="para">&nbsp;&nbsp;WebGL is a cross-platform, royalty-free web standard for a low-level 3D graphics API based on OpenGL ES, exposed to ECMAScript via the HTML5 Canvas element. Developers familiar with OpenGL ES 2.0 will recognize WebGL as a Shader-based API using GLSL, with constructs that are semantically similar to those of the underlying OpenGL ES API. It stays very close to the OpenGL ES specification, with some concessions made for what developers expect out of memory-managed languages such as JavaScript. WebGL 1.0 exposes the OpenGL ES 2.0 feature set; WebGL 2.0 exposes the OpenGL ES 3.0 API.</p>
+    <h2>WebGL简介</h2>
+    
+    <p>
+    WebGL is a cross-platform, royalty-free web standard for a low-level 3D graphics API based on OpenGL ES, exposed to ECMAScript via the HTML5 Canvas element. WebGL 1.0 exposes the OpenGL ES 2.0 feature set; WebGL 2.0 exposes the OpenGL ES 3.0 API.
+    </p>
+    
+    <p>
+    OpenGL® ES is a royalty-free, cross-platform API for rendering advanced 2D and 3D graphics on embedded and mobile systems - including consoles, phones, appliances and vehicles. It consists of a well-defined subset of desktop OpenGL suitable for low-power devices, and provides a flexible and powerful interface between software and graphics acceleration hardware.
+    </p>
+    
+    <p>
+    OpenGL is the industry's most widely used, supported and best documented 2D/3D graphics API making it inexpensive & easy to obtain information on implementing OpenGL in hardware and software.
+    </p>
+    <br>
+    
+    <p>
+    简而言之，就是WebGL是暴露于js层的OpenGL一套接口。所以WebGL和OpenGL（甚至其他图形API）的概念是相通的。
+    <br>
+    <span class="comment">
+    &nbsp;&nbsp;编程语言的实现方式：CPU是按照指令进行运行的，所以一切的编程语言的代码最终转化为CPU指令的执行，然后有个系统讲“你按照我规定的指令，我给你翻译为CPU指令”，被规定的指令（即语法）就是native的编程语言，系统指编译器，然后另外又有一个系统讲“你按照我规定的指令告诉我需要做什么，然后我帮你做”，这个被规定的指令同样是编程语言，这个系统是于java叫做编译器和虚拟机的东西，于js是浏览器。跨平台就是第二种的类似实现，是一种加中间层的实现方式。
+    <br>
+
+    &nbsp;&nbsp;
+    WebGL和OpenGL的关系：浏览器遇到WebGL相关的代码就去调用底层的3D API，见<a href="./chapter-6.html">Chrome WebGL Windows 上实现分析</a> 上实现。
+    </span>
+    </p>
     
     
-    <h2>用人话讲</h2>
-      <p class="para">
-      &nbsp;&nbsp;&nbsp;&nbsp;OpenGL是一个基于图形设备的跨平台图形编程接口，能够利用图形设备（GPU）的图形计算能力，用来处理三维模型然后生成二维的图像.
-      <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;OpenGL ES 是针对嵌入式和移动平台等性能较弱的开发的一套OpenGL的子集
-      <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;WebGL 将 OpenGL ES以JavaScript层的接口暴露出来
-      <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;WebGL需要浏览器的支持，相对于native开发来讲更加方便，不需要准备开发环境（不需要下载依赖的库），不需要繁琐的OpenGL的初始化过程，比如初始化context，导出当前版本的API（这个是一个Win32平台下C++的OpenGL的简单代码https://github.com/LeafFourth/gl_begin）。
+    <h2>OpenGL简介</h2>
+    
+
+      <p class="sub_title2 key_words">
+      What is OpenGL?
+      </p>
+  
+      <p>
+      OpenGL is the name for the specification that describes the behavior of a rasterization-based rendering system. It defines the API through which a client application can control this system. The OpenGL rendering system is carefully specified to make hardware implementations allowable.
+      </p>
+      <p>
+      Hardware vendors, the people who make GPUs, are responsible for writing implementations of the OpenGL rendering system. Their implementations, commonly called "drivers", translate OpenGL API commands into GPU commands. If a particular piece of hardware is unable to implement all of the OpenGL specification via hardware, the hardware vendor must still provide this functionality, typically via a software-based implementation of the features missing from hardware.
       </p>
       
-    <h2>层次结构</h2>
-      <p class="para">
-      &nbsp;&nbsp;&nbsp;&nbsp;计算机领域（包括软件和硬件）有一个随处可见的概念——抽象（接口），比如深入人心的"硬件设备——设备驱动——操作系统——应用软件"的计算机系统结构。
-      <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;OpenGL的应用层次如下
-      <br>
-      <img src="software_hierarcgy.png" width="30%" height="30%"></img>
+      <p class="sub_title2 key_words">
+      What is NOT OpenGL?
       </p>
+      
+      <p>
+      The OpenGL API only deals with rendering graphics. OpenGL does not provide functions for animations, timing, file IO, image file format processing, GUI, and so forth. OpenGL is concerned only about rendering.
+      </p>
+      <p>
+      GLUT is not OpenGL. It is not a part of OpenGL; it is simply a library that is used by some users to create an OpenGL window.
+      </p>
+      
+      <p class="sub_title2 key_words">
+      Is OpenGL Open Source?
+      </p>
+      
+      <p>
+      No, OpenGL doesn't have any source code. GL is a specification which can be found on this website. It describes the interface the programmer uses and expected behavior. OpenGL is an open specification. Anyone can download the spec for free. This is as opposed to ISO standards and specifications, which cost money to access.
+      </p>
+      <br>
+      <p>
+      简而言之，OpenGL是一套指针对于渲染的跨平台API规范，规范的实现者是各个硬件厂商。
+      </p>
+  
+    </p>
       
   </body>
 </html>
