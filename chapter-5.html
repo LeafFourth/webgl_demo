@@ -3,22 +3,135 @@
     <title>chapter-5</title>
     
     <link rel="stylesheet" type="text/css" href="./chapter.css" > </link>
+    
+    <base target="_blank" />
   </head>
   
   
   <body>
     <h1>Hello，World</h1>
-    <p class="sub_title">——</p>
-    
-    <h2>引入</h2>
+    <p class="sub_title">——talk is cheap, show me the code</p>
       <p>
-      
+        本节以一个WebGL里的 <a href="http://shengchao.xyz/blog/custom/3d/webgl_demo1/model_mode.php?mode=simple">hello world ——绘制三角形</a>作为展开，从代码的角度揭示WebGL工作的流程。
       </p>
-      
-    <h2>动机</h2>
+    
       <p>
+        有一点需要注意的是，由于WebGL采用OpenGL类似的比较底层的API，所以是一种状态机的编码方式，即操作的对象需要先进行绑定后操作（需要多个函数完成），而不能简单的通过一个函数直接对一个对象进行操作。最近的OpenGL（version 4.5）才引入(Direct State Access)的机制，当然WebGL还没有此机制
+      </p>
 
+    <h2>获取WebGL绘制的上下文context</h2>
+      <p>
+        代码：
       </p>
+        <p class="inner_para text_block1">const canvas = document.getElementById("model");</p>
+        <p class="inner_para text_block1">gl = canvas.getContext("webgl", {stencil:true} );</p>
+        <p class="inner_para text_block1 comment">gl既是获取到的上下文，后面的操作都需要使用。</p>
+        <p class="inner_para text_block1 comment">"{stencil:true}" 表示帧缓存带有模板缓存。</p>
+
+    </p>
     
+    <h2>向shader传入数据</h2>
+      <p class="key_words">
+        对于shader程序的attribute变量
+      </p>
+      <p class="inner_para">
+        首先需要申请buffer对象，代码如下，
+      </p>
+        <p class="inner_para no_indent text_block1">var dataBuffer = gl.createBuffer();</p>
+        <p class="inner_para no_indent text_block1">gl.bindBuffer(gl.ARRAY_BUFFER, dataBuffer);</p>
+        <p class="inner_para no_indent text_block1">gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);</p>
+        
+        <p class="inner_para text_block1 no_indent comment">其中：</p>
+        <p class="inner_para text_block1 no_indent comment">gl是WebGL的绘制上下文对象context，类型为WebGLRenderingContext；</p>
+        <p class="inner_para text_block1 no_indent comment">dataBuffer是获取的buffer对象</p>
+        
+        <p class="inner_para text_block1 comment"><a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bindBuffer">bindBuffer </a>绑定当前的buffer，是指之后buffer相关的操作都应用于dataBuffer除非重新绑定其他buffer
+        </p>
+        
+        <p class="inner_para text_block1 no_indent comment">ARRAY_BUFFER 代表是buffer的类型，即顶点数据数组；</p>
+        <p class="inner_para text_block1 no_indent comment">STATIC_DRAW 与优化相关，暂时先使用STATIC_DRAW；</p>
+        <p class="inner_para text_block1 no_indent comment">data 即我们需要传入的顶点数据（不一定是坐标，也可以是顶点的颜色）;</p>
+          
+        <br>
+          
+      <p class="inner_para">
+        然后将buffer对象映射到shader的attribute变量中，代码如下：
+      </p>
+        <p class="inner_para text_block1 no_indent">varvar vertexLoca = gl.getAttribLocation(simpleProgram, "vertex");</p>
+        <p class="inner_para text_block1 no_indent">vargl.bindBuffer(gl.ARRAY_BUFFER, dataBuffer);</p>
+        <p class="inner_para text_block1 no_indent">vargl.vertexAttribPointer(vertexLoca, 3, gl.FLOAT, false, 0, 0);</p>
+        <p class="inner_para text_block1 no_indent">vargl.enableVertexAttribArray(vertexLoca);</p>
+        
+        <p class="inner_para text_block1 no_indent comment">其中：</p>
+        <p class="inner_para text_block1 no_indent comment">getAttribLocation用于shader程序获取attribute类型变量的位置</p>
+        <p class="inner_para text_block1 no_indent comment">vertexLoca  就是shader程序中名为 vertex的attribute的位置，用于绑定上面的buffer对象；</p>
+        
+        <p class="inner_para text_block1 no_indent comment"><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/WebGLRenderingContext/vertexAttribPointer">vertexAttribPointer</a> 用于buffer对象的绑定，第二个参数表示一组顶点数据由多少个FLOAT值组成；</p>
+        
+        <p class="inner_para text_block1 no_indent comment"><a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/enableVertexAttribArray">enableVertexAttribArray</a> 使vertexLoca变量起作用；</p>
+
+      
+      <br>
+      
+      <p class="key_words">
+        对于shader程序的uniform变量：
+      </p>
+      <p>
+        以四维矩阵为例，代码如下
+      </p>
+        <p class="inner_para text_block1 no_indent">const projectLoca = gl.getUniformLocation(mainProgram, "projectMatrix");</p>
+        <p class="inner_para text_block1 no_indent">gl.uniformMatrix4fv(projectLoca, false, mainProjectMatrix);</p>
+        
+        <p class="inner_para text_block1 no_indent comment ">代码的含义是获取shader中projectMatrix的位置projectLoca，然后把矩阵数据（一个数组）与projectLoca进行绑定；
+        uniform变量需要用 <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/uniform">uniform[1234][fi][v]</a>  和 <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/uniformMatrix">uniformMatrix[234]fv</a>  族的函数进行绑定，uniformMatrix4fv是专用于4维矩阵的</p>
+      
+      
+    <h2>场景绘制</h2>
+      <p class="inner_para">
+        清空场景(清空屏幕上每一像素的值)：
+      </p>
+        <p class="inner_para text_block1 no_indent">gl.clearColor(0.0, 0.0, 0.0, 1.0);</p>
+        <p class="inner_para text_block1 no_indent">gl.clearDepth(1.0);</p>
+        <p class="inner_para text_block1 no_indent">gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);</p>
+        <p class="inner_para text_block1 no_indent comment">清空操作就是把每个像素的值设置为特定的值，前两行设置清空后的值，第三行进行清空操作；这三行代码把画布清空为黑色，且所有像素的深度都为1（能见的片元的最大深度）</p>
+      
+      <br>
+      
+      <p class="inner_para">
+        启用深度测试：
+      </p>
+        <p class="inner_para text_block1 no_indent">gl.enable(gl.DEPTH_TEST); </p>
+        <p class="inner_para text_block1 no_indent">gl.depthFunc(gl.LEQUAL);</p>
+        <p class="inner_para text_block1 no_indent comment">LEQUAL表示保留较小的片元(如前面深度测试所讲)，能够实现近的物体遮蔽远处物体的效果</p>
+      
+      <br>
+      
+      <p class="inner_para">
+        使用 drawArrays 进行绘制
+      </p>
+        <p class="inner_para text_block1 no_indent">gl.drawArrays(gl.TRIANGLES, 0, 3);</p>
+        <p class="inner_para text_block1 no_indent comment">这个代码表示绘制三角形，直接从第一组顶点数据开始绘制，共有三组顶点数据，如三角形有三个顶点。</p>
+      <p class="inner_para">
+        drawElements 表示通过顶点数据的索引完成绘制，可以替代 drawArrays 完成绘制，但是需要额外申请一个索引buffer，创建索引buffer如下：
+      </p>
+        <p class="inner_para text_block1 no_indent">const buffer = gl.createBuffer();</p>
+        <p class="inner_para text_block1 no_indent">gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);</p>
+        <p class="inner_para text_block1 no_indent">gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(dataArray), gl.STATIC_DRAW); </p>
+        <p class="inner_para text_block1 no_indent comment">索引buffer的每一个值对应一组顶点的索引</p>
+      <p class="inner_para">
+        使用drawElements然后进行绘制
+      </p>
+        <p class="inner_para text_block1 no_indent">gl.<a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/drawElements">drawElements</a>(gl.TRIANGLES, 3, gl.UNSIGNED_SHORT, 0);
+        </p>
+        <p class="inner_para text_block1 no_indent comment">第2个参数表示有三个索引，对应三角形有三个顶点；</p>
+      
+      
+    <h2>完成绘制代码</h2>
+      <p class="inner_para">
+        示例 model_mode.php?mode=simple  通过js代码 "showMode=simple" 只展示绘制三角形的代码，代码流程如下：
+      </p>
+        <p class="inner_para text_block1 no_indent">initSimpleGL 初始化简单示例所需要使用的buffer并创建shader程序；</p>
+        <p class="inner_para text_block1 no_indent">通过requestAnimationFrame注册绘制的回调，不停调用 drawScene 进行场景的重绘；</p>
+        
   </body>
 </html>

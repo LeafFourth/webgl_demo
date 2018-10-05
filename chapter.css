@@ -24,14 +24,21 @@ h2 {
 }
 
 .key_words {
-  text-indent:0px;
   font-weight:bold;
+}
+
+.no_indent {
+  text-indent: 0px;
 }
 
 .sub_title2 {
   position:relative; 
   margin-left:100px; 
   margin-right:100px;
+  margin-bottom:0px;
+}
+
+.inner_para {
   margin-bottom:0px;
 }
 
@@ -43,10 +50,6 @@ div.img_wrapper {
   text-align: center;
 }
 
-div.img_wrapper {
-  text-align: center;
-}
-
 .text_block1 {
-  margin-left:40px; 
+  margin-left:140px; 
 }
