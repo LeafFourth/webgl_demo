@@ -53,3 +53,17 @@ div.img_wrapper {
 .text_block1 {
   margin-left:140px; 
 }
+
+.text_block2 {
+  margin-left:160px; 
+}
+
+.code_block {
+  font-style: italic;
+}
+
+.lit_br {
+  margin-right:0px;
+  margin-bottom:0px;
+  line-height: 8px;
+}

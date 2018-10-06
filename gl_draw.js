@@ -66,11 +66,12 @@ function initGL()
     alert("WebGL get context error");
   }
   
-  initSimpleGL();
-  initMainGL();
-  initBkgGL();
-  
-  initOriginNormals();
+  if (typeof bianliang != "undefined" && showMode == "simple") {
+    initSimpleGL();
+  } else {
+    initMainGL();
+    initBkgGL();
+  }
   
   function render()
   {
@@ -112,6 +113,8 @@ function initMainGL()
   textureImage3 = loadTexure("./3.jpg");
   textureImage4 = loadTexure("./4.jpg");
   textureImage5 = loadTexure("./5.jpg");
+  
+  initOriginNormals();
 }
 
 function initBkgGL()
@@ -125,7 +128,7 @@ function initBkgGL()
 function drawScene()
 {
   clearScene();
-  if (showMode == "simple") {
+  if (typeof bianliang != "undefined" && showMode == "simple") {
     drawSimpleScene();
   } else {
     drawMainScene();
@@ -253,9 +256,9 @@ function updateTexture(index, texLoca)
 
 function rotateMainModel(bPoint, ePoint)
 {
-  console.log("************");
-  console.log(bPoint);
-  console.log(ePoint);
+  if (typeof bianliang != "undefined" && showMode == "simple") {
+    return;
+  }
   
   var v = createNullVec4();
   subVec(v, bPoint, ePoint, 2);
@@ -292,7 +295,9 @@ function glLog(context)
 
 function onGLDClick(x, y)
 {
-  console.log("***********");
+  if (typeof bianliang != "undefined" && showMode == "simple") {
+    return;
+  }
   
   var trans = createIdentityMatrix();
   var point = createNullVec4();
@@ -309,11 +314,9 @@ function onGLDClick(x, y)
   
   invert(tmpMt, mainWorldMatrix);
   multiply(trans, tmpMt, trans);
-  //multiply(trans, trans, tmpMt);
    
   invert(tmpMt, mainViewMatrix);
   multiply(trans, tmpMt, trans);
-  //multiply(trans, trans, tmpMt);
   
 
 
@@ -330,13 +333,6 @@ function onGLDClick(x, y)
   far[3] = 1;
   
   transformMat4(far, far, trans);
-  
-  
-  //return;
-  
-  console.log("near:" + near);
-  console.log("tmp:" + tmp);
-  //console.log("far:" + far);
   
   checkPick(near, far);
   return;
@@ -450,6 +446,10 @@ function initOriginNormals()
 
 function revertFace(index)
 {
+  if (typeof bianliang != "undefined" && showMode == "simple") {
+    return;
+  }
+  
   console.log("revert to " + index);
   if (index < 0 || index > 6) {
 	  return;
@@ -489,7 +489,7 @@ function revertFace(index)
   
   
   //沿着法线转动
-  {00
+  {
     const ang2 = angle(trace1, originVec1);
     const ax2 = createNullVec4();
     cross(ax2, trace1, originVec1);
@@ -544,6 +544,10 @@ function updateNormalTraces(mt)
 
 function updateMainViewAngle(angle)
 {
+  if (typeof bianliang != "undefined" && showMode == "simple") {
+    return;
+  }
+  
   mainProjectMatrix = createProjectionMatrix(angle);
 }
 

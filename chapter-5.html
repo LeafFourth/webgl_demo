@@ -16,30 +16,52 @@
       </p>
     
       <p>
-        有一点需要注意的是，由于WebGL采用OpenGL类似的比较底层的API，所以是一种状态机的编码方式，即操作的对象需要先进行绑定后操作（需要多个函数完成），而不能简单的通过一个函数直接对一个对象进行操作。最近的OpenGL（version 4.5）才引入(Direct State Access)的机制，当然WebGL还没有此机制
+        有一点需要注意的是，由于WebGL采用OpenGL类似的比较底层的API，所以是一种状态机的编码方式，即操作的对象需要先进行绑定后操作（需要多个函数完成），而不能简单的通过一个函数直接对一个对象进行操作。最近的OpenGL（version 4.5）才引入(Direct State Access)的机制，当然WebGL还没有此机制。
       </p>
-
-    <h2>获取WebGL绘制的上下文context</h2>
+      
+    <h2>一、一些注意</h2>
       <p>
+        由于WebGL采用OpenGL类似的比较底层的API，所以是一种状态机的编码方式，即操作的对象需要先进行绑定后操作（需要多个函数完成），而不能简单的通过一个函数直接对一个对象进行操作。最近的OpenGL（version 4.5）才引入(Direct State Access)的机制，当然WebGL还没有此机制，并且新的版本需要新的驱动支持。
+      </p>
+      
+      <p  class="inner_para">
+        坐标系统。WebGL和OpenGL、DirectX的坐标系统可能有所不同。WebGL的坐标系的原点对应画布（canvas）的中心，按照右手坐标系的原则，X轴正方向向右，Y轴正方向向上，Z轴向屏幕外。
+      </p>
+      
+        
+      <p  class="inner_para">           右手坐标系是惯用的坐标系统，构造右手坐标系可以采用如下手段：伸出右手，手掌平放，掌心向上，中指向上翘起，大拇指、食指在水平面方向上展开成90度角，那么，保持大拇指、食指、中指相对位置不变，那么此三只手指分别对应X轴正方向、Y轴正方向、Z轴正方向，如图所示：
+      </p>
+        
+        <div class="img_wrapper"> <img src="./right-handed.jpg"></img><br>右手坐标系</div>
+      
+      <br>
+
+    <h2>二、获取WebGL绘制的上下文context</h2>
+      <p class="inner_para">
         代码：
       </p>
+        <p class="lit_br">&nbsp;</p>
         <p class="inner_para text_block1">const canvas = document.getElementById("model");</p>
         <p class="inner_para text_block1">gl = canvas.getContext("webgl", {stencil:true} );</p>
+        <p class="lit_br">&nbsp;</p>
+        
         <p class="inner_para text_block1 comment">gl既是获取到的上下文，后面的操作都需要使用。</p>
         <p class="inner_para text_block1 comment">"{stencil:true}" 表示帧缓存带有模板缓存。</p>
 
     </p>
     
-    <h2>向shader传入数据</h2>
+    <h2>三、向shader传入数据</h2>
       <p class="key_words">
         对于shader程序的attribute变量
       </p>
       <p class="inner_para">
         首先需要申请buffer对象，代码如下，
       </p>
+        <p class="lit_br">&nbsp;</p>
         <p class="inner_para no_indent text_block1">var dataBuffer = gl.createBuffer();</p>
         <p class="inner_para no_indent text_block1">gl.bindBuffer(gl.ARRAY_BUFFER, dataBuffer);</p>
         <p class="inner_para no_indent text_block1">gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);</p>
+        <p class="lit_br">&nbsp;</p>
         
         <p class="inner_para text_block1 no_indent comment">其中：</p>
         <p class="inner_para text_block1 no_indent comment">gl是WebGL的绘制上下文对象context，类型为WebGLRenderingContext；</p>
@@ -57,10 +79,12 @@
       <p class="inner_para">
         然后将buffer对象映射到shader的attribute变量中，代码如下：
       </p>
+        <p class="lit_br">&nbsp;</p>
         <p class="inner_para text_block1 no_indent">varvar vertexLoca = gl.getAttribLocation(simpleProgram, "vertex");</p>
         <p class="inner_para text_block1 no_indent">vargl.bindBuffer(gl.ARRAY_BUFFER, dataBuffer);</p>
         <p class="inner_para text_block1 no_indent">vargl.vertexAttribPointer(vertexLoca, 3, gl.FLOAT, false, 0, 0);</p>
         <p class="inner_para text_block1 no_indent">vargl.enableVertexAttribArray(vertexLoca);</p>
+        <p class="lit_br">&nbsp;</p>
         
         <p class="inner_para text_block1 no_indent comment">其中：</p>
         <p class="inner_para text_block1 no_indent comment">getAttribLocation用于shader程序获取attribute类型变量的位置</p>
@@ -79,20 +103,25 @@
       <p>
         以四维矩阵为例，代码如下
       </p>
+        <p class="lit_br">&nbsp;</p>
         <p class="inner_para text_block1 no_indent">const projectLoca = gl.getUniformLocation(mainProgram, "projectMatrix");</p>
         <p class="inner_para text_block1 no_indent">gl.uniformMatrix4fv(projectLoca, false, mainProjectMatrix);</p>
+        <p class="lit_br">&nbsp;</p>
         
         <p class="inner_para text_block1 no_indent comment ">代码的含义是获取shader中projectMatrix的位置projectLoca，然后把矩阵数据（一个数组）与projectLoca进行绑定；
         uniform变量需要用 <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/uniform">uniform[1234][fi][v]</a>  和 <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/uniformMatrix">uniformMatrix[234]fv</a>  族的函数进行绑定，uniformMatrix4fv是专用于4维矩阵的</p>
       
       
-    <h2>场景绘制</h2>
+    <h2>四、场景绘制</h2>
       <p class="inner_para">
         清空场景(清空屏幕上每一像素的值)：
       </p>
+        <p class="lit_br">&nbsp;</p>
         <p class="inner_para text_block1 no_indent">gl.clearColor(0.0, 0.0, 0.0, 1.0);</p>
         <p class="inner_para text_block1 no_indent">gl.clearDepth(1.0);</p>
         <p class="inner_para text_block1 no_indent">gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);</p>
+        <p class="lit_br">&nbsp;</p>
+        
         <p class="inner_para text_block1 no_indent comment">清空操作就是把每个像素的值设置为特定的值，前两行设置清空后的值，第三行进行清空操作；这三行代码把画布清空为黑色，且所有像素的深度都为1（能见的片元的最大深度）</p>
       
       <br>
@@ -100,8 +129,10 @@
       <p class="inner_para">
         启用深度测试：
       </p>
+        <p class="lit_br">&nbsp;</p>
         <p class="inner_para text_block1 no_indent">gl.enable(gl.DEPTH_TEST); </p>
         <p class="inner_para text_block1 no_indent">gl.depthFunc(gl.LEQUAL);</p>
+        <p class="lit_br">&nbsp;</p>
         <p class="inner_para text_block1 no_indent comment">LEQUAL表示保留较小的片元(如前面深度测试所讲)，能够实现近的物体遮蔽远处物体的效果</p>
       
       <br>
@@ -109,29 +140,64 @@
       <p class="inner_para">
         使用 drawArrays 进行绘制
       </p>
+        <p class="lit_br">&nbsp;</p>
+      
         <p class="inner_para text_block1 no_indent">gl.drawArrays(gl.TRIANGLES, 0, 3);</p>
+        <p class="lit_br">&nbsp;</p>
+        
         <p class="inner_para text_block1 no_indent comment">这个代码表示绘制三角形，直接从第一组顶点数据开始绘制，共有三组顶点数据，如三角形有三个顶点。</p>
+        
+      <br>
+        
       <p class="inner_para">
-        drawElements 表示通过顶点数据的索引完成绘制，可以替代 drawArrays 完成绘制，但是需要额外申请一个索引buffer，创建索引buffer如下：
+        drawElements 通过顶点数据的索引完成绘制，可以替代 drawArrays 完成绘制，但是需要额外申请一个索引buffer，创建索引buffer如下：
       </p>
+        <p class="lit_br">&nbsp;</p>
         <p class="inner_para text_block1 no_indent">const buffer = gl.createBuffer();</p>
         <p class="inner_para text_block1 no_indent">gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);</p>
         <p class="inner_para text_block1 no_indent">gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(dataArray), gl.STATIC_DRAW); </p>
+        <p class="lit_br">&nbsp;</p>
+        
         <p class="inner_para text_block1 no_indent comment">索引buffer的每一个值对应一组顶点的索引</p>
+        
+      <br> 
+       
       <p class="inner_para">
         使用drawElements然后进行绘制
       </p>
+        <p class="lit_br">&nbsp;</p>
         <p class="inner_para text_block1 no_indent">gl.<a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/drawElements">drawElements</a>(gl.TRIANGLES, 3, gl.UNSIGNED_SHORT, 0);
         </p>
+        <p class="lit_br">&nbsp;</p>
+        
         <p class="inner_para text_block1 no_indent comment">第2个参数表示有三个索引，对应三角形有三个顶点；</p>
       
       
-    <h2>完成绘制代码</h2>
+    <h2>五、完成绘制代码</h2>
       <p class="inner_para">
         示例 model_mode.php?mode=simple  通过js代码 "showMode=simple" 只展示绘制三角形的代码，代码流程如下：
       </p>
+        <p class="lit_br">&nbsp;</p>
         <p class="inner_para text_block1 no_indent">initSimpleGL 初始化简单示例所需要使用的buffer并创建shader程序；</p>
         <p class="inner_para text_block1 no_indent">通过requestAnimationFrame注册绘制的回调，不停调用 drawScene 进行场景的重绘；</p>
         
+        
+    <h2>六、深入了解</h2>
+      
+    <p>       这个代码通过通过顶点坐标simpleVertex(data.js中的数据)和顶点颜色simpleColor(data.js中的数据)两种顶点数据绘制了一个彩色的三角形。
+    </p>
+      
+    <p class="inner_para">
+      这个示例可以说明：
+    </p>
+      <p class="lit_br">&nbsp;</p>
+      <p class="inner_para text_block1 no_indent">      
+        WebGL裁剪的区域为x、y、z坐标都在-1到1之间的区域：此示例代码并未涉及顶点坐标的计算（相当于顶点的变换矩阵为一个单位矩阵，顶点坐标也不会发生变化），所以输入的顶点坐标就作为最终的顶点坐标，如果改造代码，使得某个顶点位于裁剪区域之外，那么将只能够看到三角形的一部分。
+      </p>
+      <p class="lit_br">&nbsp;</p>
+      <p class="inner_para text_block1 no_indent">  
+        这个示例可以说明光栅化中的差值操作，即光栅化过程中将图形映射到屏幕像素时，会把数据求差值，表现此示例代码中就是 顶点shader 传给 片元shader 的颜色在每个像素上进行了差值计算使得每个片元都具有了颜色，所以三角形内部的区域是彩色的（即颜色做了差值）；
+      </p>
+    
   </body>
 </html>

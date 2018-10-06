@@ -7,101 +7,134 @@
   
   
   <body>
-    <h1>Shader与GLSL</h1>
-    <p class="sub_title">——少则得，多则惑</p>
+    <h1>Shader</h1>
+    <p class="sub_title">——</p>
     
     <p>
-      &nbsp;&nbsp;&nbsp;&nbsp;前面基础讲的差不多了，这里开始涉及代码的内容。
+      渲染管线是用来完成渲染过程的，Shader是控制渲染过程的方式，因此此节是相当重要的。
     </p>
     
-    <h2>什么是Shader</h2>
+    <h2>一、什么是Shader</h2>
       
-      <p>
+    <p class="inner_para">
+      Shader，着色器，是运行在GPU之上的程序，是现代OpenGL应用程序控制部分渲染管线过程的方式，是可编程渲染管线的具体体现方式。
+    </p>
+    <p class="inner_para comment">
+      A Shader is a user-defined program designed to run on some stage of a graphics processor. Its purpose is to execute one of the programmable stages of the rendering pipeline.
+    </p>
     
-      &nbsp;&nbsp;&nbsp;&nbsp;Shader，着色器，是运行在GPU之上的程序，是现代OpenGL应用程序控制渲染管线完成渲染过程的一种方式，是可编程渲染管线的具体体现方式。
-      <br>
-      <br>
-      
-      
-      &nbsp;&nbsp;&nbsp;&nbsp;现代的OpenGL程序都需要Shader来完成，Shader程序有：  <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Vertex Shader(顶点着色器)  <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Tessellation(细分着色器)   <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Tess Control Shader         <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Tess Evaluation Shader      <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Geometry Shader(几何着色器)  <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Fragment Shader(片元着色器)  <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Compute Shader          <br>
-      <br>
-      
-      &nbsp;&nbsp;&nbsp;&nbsp;Vertex Shader 和 Fragment Shader着色器是必须的两个着色器。shader通过GLSL编写，下面会给出简单的shader程序示例
-      <br>
-      <br>
+    <br>
     
+    <p class="inner_para">
+      现代的OpenGL程序都需要Shader来完成，OpenGL支持的shader有：
+    </p>
+      <p class="lit_br">&nbsp;</p>
+      <p class="inner_para text_block1 no_indent comment">Vertex Shader(顶点着色器)  </p>
+      <p class="inner_para text_block1 no_indent comment">Tessellation(细分着色器)  </p>
+      <p class="inner_para text_block1 no_indent comment">Tess Control Shader  </p>
+      <p class="inner_para text_block1 no_indent comment">Tess Evaluation Shader  </p>
+      <p class="inner_para text_block1 no_indent comment">Geometry Shader(几何着色器)  </p>
+      <p class="inner_para text_block1 no_indent comment">Fragment Shader(片元着色器)  </p>
+      <p class="inner_para text_block1 no_indent comment">Compute Shader
+      <p class="lit_br">&nbsp;</p>
+      
+    <p class="inner_para">
+      WebGL只支持且必须 顶点着色器 和 片元着色器。
+    </p>
+    <br>
+
+    <p>
+      简单的可以把渲染管线理解为一个具有输入输出功能的程序，输入是需要渲染的数据（如顶点数据），输出是在屏幕上的进行图像的显示。而数据的输入就是通过顶点着色器传入的，之后数据就在渲染管线中加工和传递，最终生成屏幕上的图像。
+    </p>
     
+    <p>
+      Shader通过GLSL编写，WebGL 和 OpenGL 的GLSL的语法是不同的（OpenGL不同版本或许也有差异），下面会给出简单的WebGL 中shader程序示例。
+    </p>
+    
+    <br>
+      
+    <h2>二、Vertex Shader</h2>
+    
+    <p>
+      顶点着色器和前面顶点着色阶段相对应，负责为每个顶点坐标计算最终的顶点坐标，最终内置变量gl_Postion作为顶点着色器的输出将顶点坐标传递到后面的阶段。
+    </p> 
+      
+    <p class="inner_para">
+      简单的vertex shader示例：
+    </p>
+      <p class="lit_br">&nbsp;</p>
+      <p class="inner_para no_indent text_block1">attribute vec3 vertex;  </p> 
+      <p class="inner_para no_indent text_block1">attribute vec4 color;  </p> 
+      <p class="inner_para no_indent text_block1">uniform mat4 matrix;  </p> 
+      <p class="inner_para no_indent text_block1">varying highp vec4 tColor;  </p> 
+      <p class="inner_para no_indent text_block1">void main()  </p> 
+      <p class="inner_para no_indent text_block1">{  </p> 
+      <p class="inner_para no_indent text_block2">  vec4 v = vec4(vertex, 1.0);  </p> 
+      <p class="inner_para no_indent text_block2">  gl_Position = matrix * v;  </p> 
+      <p class="inner_para no_indent text_block2">  tColor = color;  </p> 
+      <p class="inner_para no_indent text_block1">}  </p> 
+      <p class="lit_br">&nbsp;</p>
+      
+      <p class="inner_para no_indent comment text_block1">这段代码是将外部传来的顶点坐标vertex通过matrix变换生成最终的顶点坐标，然后传给gl_Position作为输出，
+      另外将外部传来的顶点对应的颜色值color不加任何处理通过自定义的变量tColor传递到后面的阶段。</p> 
+      
+      <p class="lit_br">&nbsp;</p>
+      <p class="inner_para no_indent comment text_block1">其中attribute表示逐顶点传来的数据，比如模型由三个顶点组成，那么每一个顶点都会经过顶点着色阶段，然后把自己的顶点传递给vertex，对应的颜色传递给color。</p> 
+      <p class="inner_para no_indent comment text_block1">uniform 表示对于每个顶点都相同的数据，在这个程序中表示对每个顶点做同样的变换。</p> 
+      <p class="inner_para no_indent comment text_block1">mat4 表示4*4的矩阵(每个分量都是float)；</p> 
+      <p class="inner_para no_indent comment text_block1">vec4 表示大小为4的向量，此外还有v3，v2不同维度的矩阵；</p> 
+      <p class="inner_para no_indent comment text_block1">varying 表示可以在 顶点着色器 和 片元着色器 间传递的数据；</p> 
+      <p class="inner_para no_indent comment text_block1">highp 表示数据的精度。</p> 
+    
+    <br>
+    
+    <h2>三、Fragment Shader</h2>
+    <p>       
+      片元着色器和前面片元着色阶段相对应是光栅化之后的一个阶段，负责计算每个片元的最终颜色，通过内置变量gl_FragColor作为片元着色器的输出将片元信息传递到后面的阶段。
+    </p>    
+    
+    <p class="inner_para">
+    简单的Fragment shader示例：
+    </p>
+      <p class="lit_br">&nbsp;</p>
+      <p class="inner_para no_indent text_block1">  varying highp vec4 tColor;  </p>
+      <p class="inner_para no_indent text_block1">  void main()  </p>
+      <p class="inner_para no_indent text_block1">  {  </p>
+      <p class="inner_para no_indent text_block2">    gl_FragColor = tColor;  </p>
+      <p class="inner_para no_indent text_block1">  }  </p>
+      <p class="lit_br">&nbsp;</p>
+    
+      <p class="inner_para no_indent comment text_block1">这段代码的含义是将之前顶点着色器传来的颜色tColor直接作为片元主色阶段的输出。</p>
+    
+    <h2>四、shader程序的使用</h2>
+      <p class="inner_para">
+        创建shader程序需要先创建一个顶点shader对象和一个片元shader对象：创建shader对象的代码如下：
       </p>
-    <h2>Vertex Shader</h2>
-    <p>
-      &nbsp;&nbsp;&nbsp;&nbsp;顶点着色器和前面顶点着色阶段相对应，负责为每个顶点坐标计算最终的顶点坐标，最终内置变量gl_Postion作为顶点着色器的输出将顶点坐标传递到后面的阶段。
-      <br>
-      <br>
       
-      &nbsp;&nbsp;&nbsp;&nbsp简单的vertex shader示例： <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  attribute vec3 vertex;  <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  attribute vec4 color;   <br>
-      <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  uniform mat4 matrix;     <br>
-      <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  varying highp vec4 tColor; <br>
-      <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  void main() <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  {  <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      &nbsp;&nbsp;&nbsp;&nbsp;                              vec4 v = vec4(vertex, 1.0);  <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      &nbsp;&nbsp;&nbsp;&nbsp;                              gl_Position = matrix * v;  <br>
-      <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      &nbsp;&nbsp;&nbsp;&nbsp;                              tColor = color;  <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  } <br>
-      <br>
-    
-      &nbsp;&nbsp;&nbsp;&nbsp;这段代码的意思是：<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;将外部传来的顶点坐标vertex通过matrix变换生成最终的顶点坐标，然后传给gl_Position作为输出；<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;将外部传来的顶点对应的颜色值color不加任何处理通过自定义的变量tColor传递到后面的阶段；<br>
-      <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;其中attribute表示逐顶点传来的数据，比如模型由三个顶点组成，那么每一个顶点都会经过顶点着色阶段，然后把自己的顶点传递给vertex，对应的颜色传递给color。<br>
-      &nbsp;&nbsp;&nbsp;&nbsp; uniform 表示对于每个顶点都相同的数据，在这个程序中表示对每个顶点做同样的变换。 <br>
-      &nbsp;&nbsp;&nbsp;&nbsp; mat4 表示4*4的矩阵(每个分量都是float) <br>
-      &nbsp;&nbsp;&nbsp;&nbsp; vec4 表示大小为4的向量，此外还有v3，v2不同维度的矩阵  <br>
-      &nbsp;&nbsp;&nbsp;&nbsp; varying 表示可以在 顶点着色器 和 片元着色器 间传递的数据  <br>
-      &nbsp;&nbsp;&nbsp;&nbsp; highp 表示数据的精度
-      <br>
-      <br>
-    
-    </p>
-    
-    <h2>Fragment Shader</h2>
-    <p>
-    &nbsp;&nbsp;&nbsp;&nbsp;片元着色器和前面片元着色阶段相对应是光栅化之后的一个阶段，负责计算每个片元的最终颜色，通过内置变量gl_FragColor作为片元着色器的输出将片元信息传递到后面的阶段。
-    <br>
-    <br>
-    
-    
-    &nbsp;&nbsp;&nbsp;&nbsp;简单的Fragment shader示例：<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  varying highp vec4 tColor; <br>
-    <br>
-    
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  void main()  <br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  {  <br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    
-    &nbsp;&nbsp;&nbsp;&nbsp;                            gl_FragColor = tColor;  <br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  }  <br>
-    <br>
-    
-    &nbsp;&nbsp;&nbsp;&nbsp;这段代码的意思是：<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;将之前顶点着色器传来的颜色tColor直接作为片元主色阶段的输出。
-    
-    </p>
-    
+        <p class="lit_br">&nbsp;</p>
+        <p class="inner_para no_indent text_block1">var shader = gl.createShader(type);
+        <p class="inner_para no_indent text_block1">gl.shaderSource(shader, source);
+        <p class="inner_para no_indent text_block1">gl.compileShader(shader);
+        <p class="lit_br">&nbsp;</p>
+        
+        <p class="inner_para no_indent text_block1 comment">type是着色器的类型，可选的只有gl.VERTEX_SHADER， gl.FRAGMENT_SHADER，gl是WebGL的绘制上下文context。
+        <p class="inner_para no_indent text_block1 comment">source 是GLSL 编写的shader源程序的代码。
+      
+      <p class="inner_para">
+        创建shader对象后需要进行链接才能真正的创建一个完整的shader程序，代码如下：
+      </p>
+      
+        <p class="lit_br">&nbsp;</p>
+        <p class="inner_para no_indent text_block1">var glProgram = gl.createProgram();  </p>
+        <p class="inner_para no_indent text_block1">gl.attachShader(glProgram, vertexShader);  </p>
+        <p class="inner_para no_indent text_block1">gl.attachShader(glProgram, fsShader);  </p>
+        <p class="inner_para no_indent text_block1">gl.linkProgram(glProgram);  </p>
+        <p class="lit_br">&nbsp;</p>
+        
+        <p class="inner_para no_indent text_block1 comment">vertexShader 和 fsShader 就是刚刚创建的 顶点shader对象 和 片元shader对象。  </p>
+        
+        <br>
+        
+        后面示例中文件 gl_common.js 的 createProgram 是创建shader程序的示例。
   </body>
 </html>
