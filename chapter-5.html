@@ -14,10 +14,6 @@
       <p>
         本节以一个WebGL里的 <a href="http://shengchao.xyz/blog/custom/3d/webgl_demo1/model_mode.php?mode=simple">hello world ——绘制三角形</a>作为展开，从代码的角度揭示WebGL工作的流程。
       </p>
-    
-      <p>
-        有一点需要注意的是，由于WebGL采用OpenGL类似的比较底层的API，所以是一种状态机的编码方式，即操作的对象需要先进行绑定后操作（需要多个函数完成），而不能简单的通过一个函数直接对一个对象进行操作。最近的OpenGL（version 4.5）才引入(Direct State Access)的机制，当然WebGL还没有此机制。
-      </p>
       
     <h2>一、一些注意</h2>
       <p>
