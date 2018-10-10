@@ -653,3 +653,8 @@ function drawStencilScene()
     gl.drawArrays(mode, first, 6);
   }
 }
+
+function changViewPort(width, height)
+{
+  gl.viewport(0, 0, width, height);
+}
