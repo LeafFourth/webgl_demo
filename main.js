@@ -10,7 +10,7 @@ var   canvasEle = null;
 var   viewAngle = 45;
 
 function init()
-{
+{ 
   initEvents();
   
 	initGL();
@@ -22,6 +22,8 @@ function init()
     alert("critical");
     return;
   }
+  
+  onWindowResize();
 }
 
 function initEvents()
@@ -29,6 +31,8 @@ function initEvents()
 	window.onmouseup = onWindowMouseUp;
 	window.onmousemove = onWindowMouseMove;
   window.onkeydown = onWindowKeyDown;
+  
+  window.onresize = onWindowResize;
 	
 	var canvas = document.getElementById(canvasClassName);
 	canvas.onmousedown  = onCanvasMouseDown;
@@ -116,3 +120,21 @@ function onWindowKeyDown(e)
   console.log(index);
   revertFace(index);
 }
+
+function onWindowResize()
+{ 
+  var canvasWidth = document.body.clientWidth;
+  if (document.body.clientHeight < canvasWidth) {
+    canvasWidth = document.body.clientHeight;
+  }
+  
+  if (canvasWidth < 100) {
+    canvasWidth = 100;
+  }
+  
+  canvasEle.width = canvasWidth;
+  canvasEle.height = canvasWidth;
+  
+  changViewPort(canvasWidth, canvasWidth);
+}
+

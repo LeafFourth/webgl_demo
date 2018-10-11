@@ -44,7 +44,7 @@ const texture2DVShader =
   
   void main() 
   {
-    highp vec3 surrLightSurrColor = vec3(0.2, 0.2, 0.);
+    highp vec3 surrLightSurrColor = vec3(0.2, 0.2, 0.2);
     highp vec3 dirLightColor = vec3(0.8, 0.8, 0.8);
     
     highp vec3 reLightDir = vec3(-lightDir.x, -lightDir.y, -lightDir.z);
