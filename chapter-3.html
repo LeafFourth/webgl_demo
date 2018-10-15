@@ -15,7 +15,7 @@
     </p>
     
     
-    <h2>齐次坐标与齐次矩阵</h2>
+    <h2>齐次坐标、齐次矩阵、线性变换</h2>
       <p>
         3维世界中，描述一个顶点的位置只需要三个值，假设是（x,y,z）,假如一个模型由N个顶点组成，
         那么图形沿着x轴平移1的矩阵(不考虑矩阵之外的方式)是怎么样的呢?
@@ -28,7 +28,21 @@
       <p>
         所以需要齐次矩阵，这样描述一个3维顶点的坐标（w不能为0）为（x,y,z,w）,其中w如果是是1的时候（x，y， z）则为顶点的实际坐标，所以顶点的实际坐标为（x/w, y/w, z/w）;
       </p>
-        
+      
+      <p class="inner_para">
+        以上齐次坐标和其次矩阵其实都是为了完成线性变换，线性变换简单可以理解为：有个坐标V（x, y, z），变换后的坐标为M（X， Y， Z），那么：
+      </p>
+        <p class="lit_br">&nbsp;</p>
+        <p class="inner_para no_indent text_block1"> a1 * x + b1 * y + c1 * z + d1 = X</p>
+        <p class="inner_para no_indent text_block1"> a2 * x + b2 * y + c2 * z + d2 = Y</p>
+        <p class="inner_para no_indent text_block1"> a3 * x + b2 * y + c3 * z + d3 = Z</p>
+        <p class="lit_br">&nbsp;</p>
+        <p class="inner_para no_indent text_block1 comment">  
+          可以注意到M的每个分量的表达式次数都为1即 表达式由 '+' 连接的每一部分都只有一个变量 x、y 或 z。
+        </p>
+        <p class="inner_para no_indent text_block1 comment">  
+          上面的a、b、c、d 其实就是完成线性变换的矩阵。
+        </p>
     <h2>平移与缩放</h2>    
       <p class="inner_para">
         3维世界中，假如一个模型由N个顶点组成，那么图形的放大到原来的n倍(不考虑放大带来的模型中心位置的移动)的矩阵为：
