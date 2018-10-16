@@ -110,7 +110,7 @@ function onCanvasDClick(e)
 function openChapter(index)
 {
   var pageName = "chapter-" + index;
-  var htmlPage = "./chapter-" + index + ".html";
+  var htmlPage = "./chapters/chapter-" + index + ".html";
   window.open(htmlPage, pageName);
 }
 

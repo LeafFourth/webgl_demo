@@ -11,7 +11,10 @@
     <p class="sub_title">——一生二，二生三，三生万物</p>
     
     <p>
-      WebGL的渲染流程通过GPU内部的渲染管线来完成，早期的渲染管线是不可编程的，叫做固定渲染管线，现代的GPU所包含的渲染管线为可编程渲染管线。本节所述皆基于可渲染管线
+      WebGL依赖GPU的图形渲染能力，即依赖硬件设备，所以其渲染流程和GPU内部的渲染管线是相符的。
+    </p>
+    <p>
+      早期的渲染管线是不可编程的，叫做固定渲染管线，现代的GPU所包含的渲染管线为可编程渲染管线。本节所述皆基于可渲染管线
     </p>  
     
     <p class="comment inner_para">
@@ -40,7 +43,7 @@
       <p class="inner_para no_indent text_block1">计算光照；  </p>
       <p class="inner_para no_indent text_block1"> 进行投影变换,如通过透视得到近大远小的效果，透视投影的结果是讲椎体内部的顶点映射到最终可显示的区间内，椎体外的部分在后面的阶段将被抛弃掉。  </p>
 
-    <div class="img_wrapper"><img src="./projective.jpg"><br>透视投影</img></div>
+    <div class="img_wrapper"><img src="./resources/projective.jpg"><br>透视投影</img></div>
     </p>
 
     <h2>图元装配</h2>
@@ -56,7 +59,7 @@
     <p> 
       并不是每个片元都有对应于的顶点，所以连同顶点传递过来的数据需要通过特殊的计算（比如求差值）为每个像素点生成一份，这个可以思考一个三个顶点颜色不同的三角形，最终生成的三角形内部的颜色是渐变的。
     </p>
-    <div class="img_wrapper"><img src="./rasterization.png"><br>光栅化</img></div>
+    <div class="img_wrapper"><img src="./resources/rasterization.png"><br>光栅化</img></div>
   
   
     <h2>片元着色（vertex shader）</h2>
