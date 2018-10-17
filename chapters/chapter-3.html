@@ -11,11 +11,11 @@
     <p class="sub_title">——大巧若拙 </p>
     
     <p>
-      WebGL中的模型顶点变换是通过矩阵完成的， 本节矩阵为列主序
+      WebGL中的顶点坐标的计算都是通过矩阵完成的，本节将讲述如何通过矩阵基本的顶点变换（平移、缩放和旋转）。由于WebGL使用的矩阵为列主序，所以本节的矩阵也采用 列主序。
     </p>
     
     
-    <h2>齐次坐标与齐次矩阵</h2>
+    <h2>齐次坐标、齐次矩阵与线性变换</h2>
       <p>
         3维世界中，描述一个顶点的位置只需要三个值，假设是（x,y,z）,假如一个模型由N个顶点组成，
         那么图形沿着x轴平移1的矩阵(不考虑矩阵之外的方式)是怎么样的呢?
@@ -26,8 +26,33 @@
       </p>
         
       <p>
-        所以需要齐次矩阵，这样描述一个3维顶点的坐标（w不能为0）为（x,y,z,w）,其中w如果是是1的时候（x，y， z）则为顶点的实际坐标，所以顶点的实际坐标为（x/w, y/w, z/w）;
+        所以需要齐次坐标与齐次矩阵。齐次坐标在表示3维顶点时引入了第四个值w（不能为0），进而三维顶点的齐次坐标为（x,y,z,w）,其中w如果是是1的时候（x，y， z）则为顶点的实际坐标，所以顶点的实际坐标为（x/w, y/w, z/w）;
       </p>
+      
+      <p class="inner_para">
+        向量和矩阵的乘法的意义在于描述了线性变换。如存在一个三维顶点P其齐次坐标为（x,y,z,w），通过以下齐次矩阵变换得Q（X,Y,Z, W);
+      </p>
+        <p class="lit_br">&nbsp;</p>
+        <p class="inner_para no_indent text_block1">  a1， a2， a3， 0，  </p>
+        <p class="inner_para no_indent text_block1">  b1， b2， b3， 0，  </p>
+        <p class="inner_para no_indent text_block1">  c1， c2， c3， 0，  </p>
+        <p class="inner_para no_indent text_block1">  d1， d2， d3， 1，  </p>
+        <p class="lit_br">&nbsp;</p>
+      <p class="inner_para">
+        则：
+      </p>
+        <p class="lit_br">&nbsp;</p>
+        <p class="inner_para no_indent text_block1">  X = a1 * x + b1 * y + c1 * z + d1 * w;  </p>
+        <p class="inner_para no_indent text_block1">  Y = a2 * x + b2 * y + c2 * z + d2 * w;  </p>
+        <p class="inner_para no_indent text_block1">  Z = a3 * x + b3 * y + c3 * z + d3 * w;  </p>
+        <p class="inner_para no_indent text_block1">  W = 1 * w;  </p>
+        <p class="lit_br">&nbsp;</p>
+      <p class="inner_para">
+        可以看到Q的任意一个分量的表达式中由加号 “+” 连接的每一部分次数都为1 ，即每一维都是线性的，这就是线性变换。后面的平移、缩放和旋转都是线性的。
+      </p>
+        
+        <br>
+        <br>
         
     <h2>平移与缩放</h2>    
       <p class="inner_para">
@@ -70,6 +95,11 @@
         <p class="inner_para no_indent text_block2">  cos(P), sin(P),  </p>
         <p class="inner_para no_indent text_block2">  -sin(P), cos(P),  </p>
         
+      <br>
+      
+      <p>
+        三维的旋转也可以通过二维的旋转变换将三维角变换到二维平面内，求得旋转矩阵。
+      </p>
       
     <h2>复杂的变换</h2>
       <p>
