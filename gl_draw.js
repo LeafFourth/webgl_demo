@@ -107,12 +107,12 @@ function initMainGL()
   mainNormalBuffer = createGLArrayBuffer(vertexNormals);
   mainDrawIndices = createGLIndexBuffer(indices);
   
-  textureImage0 = loadTexure("./0.png");
-  textureImage1 = loadTexure("./1.png");
-  textureImage2 = loadTexure("./2.png");
-  textureImage3 = loadTexure("./3.png");
-  textureImage4 = loadTexure("./4.png");
-  textureImage5 = loadTexure("./5.png");
+  textureImage0 = loadTexure("./chapters/0.png");
+  textureImage1 = loadTexure("./chapters/1.png");
+  textureImage2 = loadTexure("./chapters/2.png");
+  textureImage3 = loadTexure("./chapters/3.png");
+  textureImage4 = loadTexure("./chapters/4.png");
+  textureImage5 = loadTexure("./chapters/5.png");
   
   initOriginNormals();
 }

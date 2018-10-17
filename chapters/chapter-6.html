@@ -20,13 +20,13 @@
       
     <p>通过DLL依赖分析，chrome并没有任何进程依赖于OpenGL，下图列出了chrome的GPU渲染进程的部分DLL依赖(图片由红线分割的两部分组成，图中的DLL安名字进行排序)。</p>
   
-    <div class="img_wrapper"><img src="./chrome_webgl2_post.png" style="width: 80%;"></img> <br>chrome 3D api 依赖</div>
+    <div class="img_wrapper"><img src="./resources/chrome_webgl2_post.png" style="width: 80%;"></img> <br>chrome 3D api 依赖</div>
       
     <p>
       另外通过测试简单的WebGL代码发现chrome内部的gpu进程会调用d3d11(DX的3D API)的API(此部分正如前面简述的js的实现原理)，windbg调试如下：
     </p>
     <div class="img_wrapper">
-      <img src="./chrome_webgl_post.png" style="width: 80%;"></img> <br>chrome 3D api 依赖
+      <img src="./resources/chrome_webgl_post.png" style="width: 80%;"></img> <br>chrome 3D api 依赖
     </div>
     
     
@@ -91,7 +91,7 @@
         <p class="lit_br">&nbsp;</p>
         <p class="inner_para no_indent text_block1">求解直线与三角形的面的交点的代码见ray_pick.js;</p>
         
-        <div class="img_wrapper"><img src="./ray_pick.png"></img> <br>raypick</div>
+        <div class="img_wrapper"><img src="./resources/ray_pick.png"></img> <br>raypick</div>
       
   </body>
 </html>
