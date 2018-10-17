@@ -16,12 +16,9 @@
     <p>
       早期的渲染管线是不可编程的，叫做固定渲染管线，现代的GPU所包含的渲染管线为可编程渲染管线。本节所述皆基于可渲染管线
     </p>  
-    
     <p class="comment inner_para">
       两种渲染管线的区别简单可以理解为前者工作的细节流程已经固定，只需要调整一些参数，后者更具灵活性，可以通过编程（GLSL，graphic language shader language）来控制一些渲染阶段的细节，现代的GPU已经不支持固定渲染管线了。
     </p>
-    
-    
     <p class="comment inner_para">
       Modern GPUs no longer provide specialized hardware for the purpose of doing specific calculations in the OpenGL pipeline. Everything is done with shaders. In order to preserve compatibility, the GL driver generates a shader which emulates the fixed functionality.
     </p>
@@ -29,10 +26,22 @@
     <p class="comment inner_para">
       Among many others, a simple example is rendering a primitive using one function call to submit each vertex attribute separately, e.g. glVertex3f(1.f, 0.f, 0.f), inside a glBegin() and glEnd() statement. 
     </p>
-    
-    <p class="comment inner_para">
+    <br>
+    <p class="inner_para">
       渲染管线的作用是将3D模型转换为2维图像的过程，每个顶点都会经过渲染管线（这也是为什么渲染过程能够大规模并发的原因），下面将讲解部分渲染管线过程。
     </p>
+    
+    <br>
+    
+    <p class="inner_para">
+      下面先思考三个问题：
+    </p>
+      <p class="inner_para no_indent text_block1">1、怎么描述一个空间面；</p>
+      <p class="inner_para no_indent text_block1">2、立体空间中，人眼中的正方体是什么样子的？（近大远小、近处遮蔽远处）</p>
+      <p class="inner_para no_indent text_block1">3、如果把人眼看到东西放在屏幕上怎么做？（屏幕是由像素组成的）</p>
+    
+    <br>
+    <br>
     
     <h2>顶点着色（vertex shader）</h2>
     <p class="inner_para">
