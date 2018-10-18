@@ -66,7 +66,7 @@ function initGL()
     alert("WebGL get context error");
   }
   
-  if (typeof bianliang != "undefined" && showMode == "simple") {
+  if (typeof showMode != "undefined" && showMode == "simple") {
     initSimpleGL();
   } else {
     initMainGL();
@@ -128,7 +128,7 @@ function initBkgGL()
 function drawScene()
 {
   clearScene();
-  if (typeof bianliang != "undefined" && showMode == "simple") {
+  if (typeof showMode != "undefined" && showMode == "simple") {
     drawSimpleScene();
   } else {
     drawMainScene();
@@ -256,7 +256,7 @@ function updateTexture(index, texLoca)
 
 function rotateMainModel(bPoint, ePoint)
 {
-  if (typeof bianliang != "undefined" && showMode == "simple") {
+  if (typeof showMode != "undefined" && showMode == "simple") {
     return;
   }
   
@@ -295,7 +295,7 @@ function glLog(context)
 
 function onGLDClick(x, y)
 {
-  if (typeof bianliang != "undefined" && showMode == "simple") {
+  if (typeof showMode != "undefined" && showMode == "simple") {
     return;
   }
   
@@ -446,7 +446,7 @@ function initOriginNormals()
 
 function revertFace(index)
 {
-  if (typeof bianliang != "undefined" && showMode == "simple") {
+  if (typeof showMode != "undefined" && showMode == "simple") {
     return;
   }
   
@@ -544,7 +544,7 @@ function updateNormalTraces(mt)
 
 function updateMainViewAngle(angle)
 {
-  if (typeof bianliang != "undefined" && showMode == "simple") {
+  if (typeof showMode != "undefined" && showMode == "simple") {
     return;
   }
   
