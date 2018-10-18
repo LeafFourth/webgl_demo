@@ -132,8 +132,14 @@ function onWindowResize()
     canvasWidth = 100;
   }
   
+  var left = (document.body.clientWidth - canvasWidth) / 2;
+  var top = (document.body.clientHeight - canvasWidth) / 2;
   canvasEle.width = canvasWidth;
   canvasEle.height = canvasWidth;
+  canvasEle.style.position = "absolute";
+  
+  canvasEle.style.left = parseInt(left).toString() + "px";
+  canvasEle.style.top = parseInt(top).toString() + "px";
   
   changViewPort(canvasWidth, canvasWidth);
 }
