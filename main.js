@@ -98,8 +98,13 @@ function onCanvasMouseZoom(e)
 
 function onCanvasDClick(e)
 {
-  x = e.clientX / canvasEle.width;
-  y = e.clientY / canvasEle.height;
+  console.log(canvasEle);
+  
+  var x = e.clientX - canvasEle.offsetLeft;
+  var y = e.clientY - canvasEle.offsetTop;
+  
+  x = x / canvasEle.width;
+  y = y / canvasEle.height;
   
   x = x * 2 - 1;
   y = 1 - y * 2;
